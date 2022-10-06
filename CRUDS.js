@@ -21,8 +21,12 @@ function getTotal(){
     }
 }
 //create product
-let dataPro = [];
-
+let dataPro;
+if(localStorage.product != null){
+    dataPro = JSON.parse(localStorage.product);
+}else {
+ dataPro = [];
+}
 submit.onclick = function (){
     let newPro = {
         title: title.value,
@@ -34,16 +38,27 @@ submit.onclick = function (){
         count:count.value,
         category:category.value, 
     }
+    dataPro.push(newPro);
+    //save in local storage
+    localStorage.setItem('product', JSON.stringify(dataPro));
+    //clear inputs
+    title.value = '';
+    price.value = '';
+    taxes.value = '';
+    ads.value = '';
+    discount.value = '';
+    total.innerHTML = '';
+    total.style.background = '#a00d02';
+    count.value = '';
+    category.value = '';
 }
-
-
-
-
-
-
-//save in local storage
-//clear inputs
 //read
+
+
+
+
+
+
 //count
 //delete
 //update
