@@ -41,6 +41,7 @@ submit.onclick = function () {
         count: count.value,
         category: category.value,
     }
+    if(title.value != '' && price.value != '' && category.value != '' && newPro.count <= 100){
     if (mood === 'Create') {
         if (newPro.count > 1) {
             for (let i = 0; i < newPro.count; i++) {
@@ -49,18 +50,26 @@ submit.onclick = function () {
         } else {
             dataPro.push(newPro);
         }
+        clearData();
     } else {
         dataPro[tmp] = newPro;
         mood = 'Create';
         submit.innerHTML = 'Create';
-        count.style.display = 'block'
-    }
+        count.style.display = 'block';
+        clearData()
+    }}
 
 
 
     //save in local storage
     localStorage.setItem('product', JSON.stringify(dataPro));
     //clear inputs
+   
+    showData();
+
+}
+
+function clearData(){
     title.value = '';
     price.value = '';
     taxes.value = '';
@@ -70,9 +79,9 @@ submit.onclick = function () {
     total.style.background = '#a00d02';
     count.value = '';
     category.value = '';
-    showData();
-
 }
+
+
 //read
 function showData() {
     let table = '';
@@ -197,7 +206,7 @@ function searchData(value) {
     // search.value = '';
 
 }
-
-
 //clean data
+
+
 
