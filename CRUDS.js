@@ -9,25 +9,28 @@ let count = document.getElementById('count');
 let category = document.getElementById('category');
 let submit = document.getElementById('submit');
 
+let mood = 'Create';
+let tmp;
+
 //get total
-function getTotal(){
-    if(price.value != ''){
-        let result = (+price.value + +taxes.value + +ads.value ) - +discount.value;
+function getTotal() {
+    if (price.value != '') {
+        let result = (+price.value + +taxes.value + +ads.value) - +discount.value;
         total.innerHTML = result;
         total.style.background = '#040';
-    }else {
+    } else {
         total.innerHTML = '';
         total.style.background = '#a00d02'
     }
 }
 //create product
 let dataPro;
-if(localStorage.product != null){
+if (localStorage.product != null) {
     dataPro = JSON.parse(localStorage.product);
-}else {
- dataPro = [];
+} else {
+    dataPro = [];
 }
-submit.onclick = function (){
+submit.onclick = function () {
     let newPro = {
         title: title.value,
         price: price.value,
@@ -35,18 +38,25 @@ submit.onclick = function (){
         ads: ads.value,
         discount: discount.value,
         total: total.innerHTML,
-        count:count.value,
-        category:category.value, 
+        count: count.value,
+        category: category.value,
     }
-
-    if(newPro.count > 1){
-        for (let i = 0; i < newPro.count; i++) {
+    if (mood === 'Create') {
+        if (newPro.count > 1) {
+            for (let i = 0; i < newPro.count; i++) {
+                dataPro.push(newPro);
+            }
+        } else {
             dataPro.push(newPro);
         }
-    }else {
-        dataPro.push(newPro);
+    } else {
+        dataPro[tmp]  = newPro;
+        mood = 'Create';
+        submit.innerHTML = 'Create';
+        count.style.display = 'block'
     }
     
+
 
     //save in local storage
     localStorage.setItem('product', JSON.stringify(dataPro));
@@ -64,12 +74,12 @@ submit.onclick = function (){
 
 }
 //read
-function showData(){
+function showData() {
     let table = '';
     for (let i = 0; i < dataPro.length; i++) {
         table += `
         <tr>
-            <td>${i+1}</td>
+            <td>${i + 1}</td>
             <td>${dataPro[i].title}</td>
             <td>${dataPro[i].price}</td>
             <td>${dataPro[i].taxes}</td>
@@ -77,42 +87,60 @@ function showData(){
             <td>${dataPro[i].discount}</td>
             <td>${dataPro[i].total}</td>
             <td>${dataPro[i].category}</td>
-            <td> <button id="update">update</button></td>
+            <td> <button id="update" onclick="updateData(${i})">update</button></td>
             <td> <button id="delete" onclick="deleteData(${i})">delete</button></td>
         </tr>`;
     }
-     document.getElementById('tbody').innerHTML = table;
+    document.getElementById('tbody').innerHTML = table;
 
-     //delete All
-     let btnDelete = document.getElementById('deleteAll');
-     if(dataPro.length>0){
+    //delete All
+    let btnDelete = document.getElementById('deleteAll');
+    if (dataPro.length > 0) {
         btnDelete.innerHTML = `
         <button onclick="deleteAll()">deleteAll (${dataPro.length})</button>
         `;
-     }else {
+    } else {
         btnDelete.innerHTML = '';
-     }
+    }
 }
 showData();
 
 //delete
-function deleteData(i){
-    dataPro.splice(i,1);
+function deleteData(i) {
+    dataPro.splice(i, 1);
     localStorage.product = JSON.stringify(dataPro);
     showData();
 }
 
 //delete All
-function deleteAll(){
+function deleteAll() {
     localStorage.clear();
     dataPro.splice(0);
     showData();
 }
 
-
-
-
 //update
+function updateData(i) {
+    title.value = dataPro[i].title;
+    price.value = dataPro[i].price;
+    taxes.value = dataPro[i].taxes;
+    ads.value = dataPro[i].ads;
+    discount.value = dataPro[i].discount;
+    getTotal();
+    count.style.display = 'none';
+    category.value = dataPro[i].category;
+    submit.innerHTML = 'Update';
+    mood = 'update';
+    tmp = i;
+    scroll({
+        top:0,
+        behavior:'smooth',
+    })
+}
+
+
+
+
 //search
 //clean data
 
